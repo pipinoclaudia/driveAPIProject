@@ -98,8 +98,7 @@ public class DriveDriverTest {
         GetSubFolders gsb = new GetSubFolders(HTTP_TRANSPORT);
         List<File> googleRootFolders = gsb.getGoogleRootFolders();
         for (File folder : googleRootFolders) {
- 
-        	f
+
             System.out.println("Folder ID: " + folder.getId() + " --- Name: " + folder.getName());
         }
        
