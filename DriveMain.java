@@ -1,4 +1,3 @@
-package it.seci.motusonlus;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -87,11 +86,11 @@ public class DriveMain {
 				.setApplicationName(APPLICATION_NAME)
 				.build();
 
-		//String rootFileName = args[0];
+		String rootFileName = args[0];
 
 		//System.out.println(new java.io.File(System.getProperty("user.home")));
 		GetSubFolders gsb = new GetSubFolders(HTTP_TRANSPORT);
-		String id = gsb.getGoogleRootFolder("PIPINO"); // da inserire rootFileName
+		String id = gsb.getGoogleRootFolder(rootFileName); // da inserire rootFileName
 		DriveDowloadFile ddf = new DriveDowloadFile(HTTP_TRANSPORT);
 		List<File> googleRootFolders = gsb.getGoogleFolders(id);
 		for (File folder : googleRootFolders) {
