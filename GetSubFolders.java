@@ -1,3 +1,5 @@
+package it.seci.motusonlus;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,27 +18,18 @@ public class GetSubFolders {
 	}
  
     // com.google.api.services.drive.model.File
-    public static final List<File> getGoogleSubFolders(String googleFolderIdParent) throws IOException {
+    private static final List<File> getGoogleSubFolders(String googleFolderIdParent) throws IOException {
  
-        Drive driveService = DriveQuickstart.getDriveService(HTTP_TRANSPORT);
+        Drive driveService = DriveMain.getDriveService(HTTP_TRANSPORT);
  
         String pageToken = null;
         List<File> list = new ArrayList<File>();
  
-        String query = null;
-        if (googleFolderIdParent == null) {
-            query = " mimeType = 'application/vnd.google-apps.folder' " //
-                    + " and 'root' in parents";
-        } else {
-            query = " mimeType = 'application/vnd.google-apps.folder' " //
-                    + " and '" + googleFolderIdParent + "' in parents";
-        }
- 
+        
+       // String query = "mimeType = 'application/vnd.google-apps.folder' and '"+googleFolderIdParent+"' in parents";
+        String query = "'"+googleFolderIdParent+"' in parents";
         do {
-            FileList result = driveService.files().list().setQ(query).setSpaces("drive") //
-                    // Fields will be assigned values: id, name, createdTime
-                    .setFields("nextPageToken, files(id, name, createdTime)")//
-                    .setPageToken(pageToken).execute();
+            FileList result = driveService.files().list().setQ(query).setFields("nextPageToken, files(id, name, createdTime)").setPageToken(pageToken).execute();
             for (File file : result.getFiles()) {
                 list.add(file);
             }
@@ -47,17 +40,44 @@ public class GetSubFolders {
     }
  
     // com.google.api.services.drive.model.File
-    public static final List<File> getGoogleRootFolders() throws IOException {
-        return getGoogleSubFolders(null);
+    
+    /**Questo metodo restituisce la lista delle cartelle contenute nella cartella che si vuole esplorare
+     * */
+    public static final List<File> getGoogleFolders(String googleFolderIdParent) throws IOException {
+    	
+        return getGoogleSubFolders(googleFolderIdParent);
     }
- 
-    public static void main(String[] args) throws IOException {
- 
-        List<File> googleRootFolders = getGoogleRootFolders();
-        for (File folder : googleRootFolders) {
- 
-            System.out.println("Folder ID: " + folder.getId() + " --- Name: " + folder.getName());
-        }
+    
+    /**Questo metodo restituisce l'id della cartella che si vuole esplorare
+     * */
+    
+    public String getGoogleRootFolder(String googleFolderName) throws IOException {
+    	return getGoogleRootFolderHide(googleFolderName);
+    }
+    
+    private static String getGoogleRootFolderHide(String googleFolderName) throws IOException {
+    	
+    	Drive driveService = DriveMain.getDriveService(HTTP_TRANSPORT);
+		String query = "mimeType = 'application/vnd.google-apps.folder' and name = '"+googleFolderName+"'";
+	
+		String id= "";
+		// Print the names and IDs for up to 10 files.
+		FileList result = driveService.files().list().setQ(query).setFields("nextPageToken, files(id, name)").execute();
+		List<File> files = result.getFiles();
+		if (files == null || files.isEmpty()) {
+			System.out.println("No files found.");
+		} else {
+			
+			for (File file : files) {
+
+				id = file.getId();
+				
+
+
+			}
+		}
+    	
+        return id;
     }
  
 }
